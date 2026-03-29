@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>唱歌 | Personal Card</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-dark: #140d0b;
+      --bg-warm: #2d1611;
+      --neon: #ff7a2f;
+      --neon-soft: rgba(255, 122, 47, 0.25);
+      --panel: rgba(255, 248, 241, 0.12);
+      --panel-line: rgba(255, 255, 255, 0.18);
+      --text-main: #fff6ef;
+      --text-dim: rgba(255, 246, 239, 0.72);
+      --chip: rgba(255, 255, 255, 0.08);
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 24px;
+      color: var(--text-main);
+      font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255, 148, 77, 0.32), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(255, 122, 47, 0.18), transparent 24%),
+        radial-gradient(circle at 50% 90%, rgba(255, 194, 148, 0.12), transparent 26%),
+        linear-gradient(135deg, var(--bg-dark) 0%, #1d1310 42%, var(--bg-warm) 100%);
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      border-radius: 999px;
+      filter: blur(20px);
+      pointer-events: none;
+    }
+
+    body::before {
+      width: 220px;
+      height: 220px;
+      top: 10%;
+      left: 8%;
+      background: rgba(255, 122, 47, 0.12);
+      animation: drift 8s ease-in-out infinite;
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      right: 8%;
+      bottom: 10%;
+      background: rgba(255, 193, 133, 0.12);
+      animation: drift 10s ease-in-out infinite reverse;
+    }
+
+    .card {
+      width: min(1120px, 100%);
+      min-height: min(780px, calc(100vh - 48px));
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      position: relative;
+      isolation: isolate;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.06) 32%, transparent 55%),
+        linear-gradient(180deg, rgba(255, 122, 47, 0.12), transparent 38%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .photo-panel {
+      position: relative;
+      min-height: 420px;
+      overflow: hidden;
+      background: #1b120f;
+    }
+
+    .photo-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transform: scale(1.04);
+      filter: saturate(1.05) contrast(1.02);
+    }
+
+    .photo-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(16, 8, 5, 0.08), rgba(16, 8, 5, 0.16) 45%, rgba(16, 8, 5, 0.6) 100%),
+        linear-gradient(90deg, transparent 45%, rgba(20, 13, 11, 0.68) 100%);
+    }
+
+    .stamp {
+      position: absolute;
+      top: 28px;
+      left: 28px;
+      z-index: 2;
+      padding: 10px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      background: rgba(14, 10, 9, 0.26);
+      backdrop-filter: blur(12px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      color: rgba(255, 246, 239, 0.85);
+    }
+
+    .photo-caption {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 28px;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+    }
+
+    .photo-caption strong {
+      display: block;
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+    }
+
+    .photo-caption span {
+      display: block;
+      margin-top: 6px;
+      color: var(--text-dim);
+      font-size: 0.95rem;
+    }
+
+    .signal {
+      padding: 10px 14px;
+      border-radius: 18px;
+      background: rgba(255, 122, 47, 0.18);
+      border: 1px solid rgba(255, 164, 112, 0.35);
+      color: #ffd5bd;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .content {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      position: relative;
+    }
+
+    .content::before {
+      content: "";
+      position: absolute;
+      top: 22px;
+      right: 24px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--neon-soft), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--chip);
+      border: 1px solid var(--panel-line);
+      color: rgba(255, 235, 221, 0.86);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(3rem, 6vw, 5.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .subtitle {
+      margin-top: 16px;
+      max-width: 28rem;
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      padding: 18px;
+      border-radius: 22px;
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      backdrop-filter: blur(14px);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.55rem;
+      font-weight: 700;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-dim);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chips span {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffe8dc;
+      font-size: 0.92rem;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 10px;
+    }
+
+    .footer p {
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 28rem;
+    }
+
+    .contact {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 168px;
+      padding: 15px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: #1f1008;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffb788, #ff7a2f);
+      box-shadow: 0 16px 30px rgba(255, 122, 47, 0.28);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .contact:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 36px rgba(255, 122, 47, 0.34);
+    }
+
+    @keyframes drift {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(0, -14px, 0);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .card {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-panel {
+        min-height: 420px;
+      }
+
+      .photo-panel::after {
+        background:
+          linear-gradient(180deg, rgba(16, 8, 5, 0.08), rgba(16, 8, 5, 0.2) 40%, rgba(16, 8, 5, 0.68) 100%);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px;
+      }
+
+      .card {
+        min-height: auto;
+        border-radius: 24px;
+      }
+
+      .content,
+      .photo-caption {
+        padding: 0;
+      }
+
+      .photo-panel {
+        min-height: 360px;
+      }
+
+      .stamp {
+        top: 18px;
+        left: 18px;
+      }
+
+      .photo-caption {
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .content {
+        padding: 24px 18px 22px;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .footer {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .contact {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <section class="photo-panel">
+      <div class="stamp">Live Card</div>
+      <img src="./chc.jpeg" alt="唱歌的照片">
+      <div class="photo-caption">
+        <div>
+          <strong>CHC</strong>
+          <span>Neon gym frame / portrait capture</span>
+        </div>
+        <div class="signal">IRL Mode On</div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div>
+        <span class="eyebrow">Personal Identity</span>
+        <h1>唱歌</h1>
+        <p class="subtitle">
+          你唱歌的个人封面。
+        </p>
+      </div>
+
+      <div class="metrics">
+        <article class="metric">
+          <strong>01</strong>
+          <span>主视觉直接使用你唱歌的照片。</span>
+        </article>
+        <article class="metric">
+          <strong>02</strong>
+          <span>整体配色取自现场暖橙灯光。</span>
+        </article>
+        <article class="metric">
+          <strong>03</strong>
+          <span>桌面端是海报卡片，手机端自动转成竖向展示。</span>
+        </article>
+      </div>
+
+      <div class="chips">
+        <span>Portrait</span>
+        <span>Fitness</span>
+        <span>Night Glow</span>
+        <span>Minimal Bio</span>
+      </div>
+
+      <div class="footer">
+        <p>
+          可以把这里再接成社交链接或者一整页更完整的个人站。
+        </p>
+        <a class="contact" href="mailto:your-email@example.com">Contact</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
