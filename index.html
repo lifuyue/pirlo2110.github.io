@@ -4,100 +4,188 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>唱歌 | Personal Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
+    /* ═══════════════════════════════════════════
+       RESET & CSS VARIABLES
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
     :root {
-      --bg-dark: #140d0b;
-      --bg-warm: #2d1611;
-      --neon: #ff7a2f;
-      --neon-soft: rgba(255, 122, 47, 0.25);
-      --panel: rgba(255, 248, 241, 0.12);
-      --panel-line: rgba(255, 255, 255, 0.18);
-      --text-main: #fff6ef;
-      --text-dim: rgba(255, 246, 239, 0.72);
-      --chip: rgba(255, 255, 255, 0.08);
-      --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      --bg:           #080508;
+      --bg-warm:      #160d0b;
+      --gold:         #e8a020;
+      --gold-light:   #ffd060;
+      --gold-dark:    #b07010;
+      --neon:         #ff7a2f;
+      --neon-glow:    rgba(255, 122, 47, 0.4);
+      --neon-soft:    rgba(255, 122, 47, 0.14);
+      --panel:        rgba(255, 248, 241, 0.07);
+      --panel-line:   rgba(255, 255, 255, 0.1);
+      --text-main:    #fff6ef;
+      --text-dim:     rgba(255, 246, 239, 0.62);
+      --shadow:       0 40px 100px rgba(0, 0, 0, 0.65);
+    }
+
+    /* ═══════════════════════════════════════════
+       BASE
+    ═══════════════════════════════════════════ */
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
+      background: var(--bg);
+      /* Ambient radial colour blobs */
+      background-image:
+        radial-gradient(ellipse at 18% 14%, rgba(232, 160, 32, 0.07) 0%, transparent 45%),
+        radial-gradient(ellipse at 82% 82%, rgba(255, 122, 47, 0.06) 0%, transparent 45%);
+      color: var(--text-main);
+      font-family: "Rajdhani", "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ═══════════════════════════════════════════
+       PARTICLE CANVAS (fixed background layer)
+    ═══════════════════════════════════════════ */
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       GLASSMORPHISM NAVBAR
+    ═══════════════════════════════════════════ */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8, 5, 8, 0.55);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+    }
+
+    .navbar-logo {
+      font-family: "Orbitron", sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.2em;
+      background: linear-gradient(90deg, var(--gold-light), var(--neon));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+
+    .navbar-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.22s;
+    }
+
+    .navbar-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      z-index: 1;
       min-height: 100vh;
       display: grid;
       place-items: center;
-      overflow: hidden;
-      padding: 24px;
-      color: var(--text-main);
-      font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(255, 148, 77, 0.32), transparent 28%),
-        radial-gradient(circle at 82% 18%, rgba(255, 122, 47, 0.18), transparent 24%),
-        radial-gradient(circle at 50% 90%, rgba(255, 194, 148, 0.12), transparent 26%),
-        linear-gradient(135deg, var(--bg-dark) 0%, #1d1310 42%, var(--bg-warm) 100%);
+      padding: 96px 24px 40px;
     }
 
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      inset: auto;
-      border-radius: 999px;
-      filter: blur(20px);
-      pointer-events: none;
-    }
-
-    body::before {
-      width: 220px;
-      height: 220px;
-      top: 10%;
-      left: 8%;
-      background: rgba(255, 122, 47, 0.12);
-      animation: drift 8s ease-in-out infinite;
-    }
-
-    body::after {
-      width: 260px;
-      height: 260px;
-      right: 8%;
-      bottom: 10%;
-      background: rgba(255, 193, 133, 0.12);
-      animation: drift 10s ease-in-out infinite reverse;
-    }
-
-    .card {
-      width: min(1120px, 100%);
-      min-height: min(780px, calc(100vh - 48px));
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 32px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      position: relative;
-      isolation: isolate;
-    }
-
-    .card::before {
+    /* Drifting ambient glows */
+    .hero::before,
+    .hero::after {
       content: "";
       position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.06) 32%, transparent 55%),
-        linear-gradient(180deg, rgba(255, 122, 47, 0.12), transparent 38%);
+      border-radius: 50%;
       pointer-events: none;
-      z-index: -1;
+      filter: blur(90px);
     }
 
+    .hero::before {
+      width: 420px; height: 420px;
+      top: 8%; left: 4%;
+      background: rgba(232, 160, 32, 0.1);
+      animation: drift 11s ease-in-out infinite;
+    }
+
+    .hero::after {
+      width: 360px; height: 360px;
+      bottom: 8%; right: 4%;
+      background: rgba(255, 122, 47, 0.09);
+      animation: drift 15s ease-in-out infinite reverse;
+    }
+
+    /* ─── Main card ─── */
+    .main-card {
+      width: min(1140px, 100%);
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      background: linear-gradient(140deg,
+        rgba(255, 255, 255, 0.055),
+        rgba(255, 255, 255, 0.016));
+      border: 1px solid rgba(255, 255, 255, 0.075);
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: var(--shadow), 0 0 0 1px rgba(232, 160, 32, 0.05);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      position: relative;
+    }
+
+    /* Animated gold top-edge shimmer */
+    .main-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        var(--gold-dark) 20%,
+        var(--gold-light) 50%,
+        var(--gold-dark) 80%,
+        transparent 100%);
+      animation: shimmer-line 2.8s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    /* ─── Photo Panel ─── */
     .photo-panel {
       position: relative;
-      min-height: 420px;
+      min-height: 460px;
       overflow: hidden;
-      background: #1b120f;
+      background: #100a08;
     }
 
     .photo-panel img {
@@ -106,7 +194,12 @@
       object-fit: cover;
       object-position: center top;
       transform: scale(1.04);
-      filter: saturate(1.05) contrast(1.02);
+      filter: saturate(1.1) contrast(1.03);
+      transition: transform 0.7s ease;
+    }
+
+    .main-card:hover .photo-panel img {
+      transform: scale(1.07);
     }
 
     .photo-panel::after {
@@ -114,77 +207,77 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(16, 8, 5, 0.08), rgba(16, 8, 5, 0.16) 45%, rgba(16, 8, 5, 0.6) 100%),
-        linear-gradient(90deg, transparent 45%, rgba(20, 13, 11, 0.68) 100%);
+        linear-gradient(180deg, rgba(8,5,8,0.06), rgba(8,5,8,0.18) 42%, rgba(8,5,8,0.72) 100%),
+        linear-gradient(90deg, transparent 38%, rgba(8,5,8,0.62) 100%);
+      pointer-events: none;
     }
 
     .stamp {
       position: absolute;
-      top: 28px;
-      left: 28px;
+      top: 24px; left: 24px;
       z-index: 2;
-      padding: 10px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 8px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 999px;
-      background: rgba(14, 10, 9, 0.26);
+      background: rgba(8, 5, 8, 0.38);
       backdrop-filter: blur(12px);
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      font-size: 0.72rem;
-      color: rgba(255, 246, 239, 0.85);
+      font-size: 0.7rem;
+      color: rgba(255, 246, 239, 0.78);
     }
 
     .photo-caption {
       position: absolute;
-      left: 28px;
-      right: 28px;
-      bottom: 28px;
+      left: 24px; right: 24px; bottom: 24px;
       z-index: 2;
       display: flex;
       justify-content: space-between;
-      align-items: end;
-      gap: 16px;
+      align-items: flex-end;
+      gap: 14px;
     }
 
     .photo-caption strong {
       display: block;
-      font-size: 1.25rem;
-      letter-spacing: 0.06em;
+      font-family: "Orbitron", sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
     }
 
-    .photo-caption span {
+    .photo-caption > div > span {
       display: block;
-      margin-top: 6px;
+      margin-top: 5px;
       color: var(--text-dim);
-      font-size: 0.95rem;
+      font-size: 0.88rem;
     }
 
     .signal {
-      padding: 10px 14px;
-      border-radius: 18px;
-      background: rgba(255, 122, 47, 0.18);
-      border: 1px solid rgba(255, 164, 112, 0.35);
-      color: #ffd5bd;
-      font-size: 0.82rem;
+      padding: 8px 14px;
+      border-radius: 16px;
+      background: rgba(232, 160, 32, 0.14);
+      border: 1px solid rgba(232, 160, 32, 0.28);
+      color: var(--gold-light);
+      font-size: 0.8rem;
       white-space: nowrap;
+      letter-spacing: 0.06em;
     }
 
+    /* ─── Content Panel ─── */
     .content {
-      padding: 40px;
+      padding: 44px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 28px;
+      gap: 26px;
       position: relative;
     }
 
+    /* Subtle corner glow */
     .content::before {
       content: "";
       position: absolute;
-      top: 22px;
-      right: 24px;
-      width: 120px;
-      height: 120px;
+      top: 20px; right: 22px;
+      width: 140px; height: 140px;
       border-radius: 50%;
       background: radial-gradient(circle, var(--neon-soft), transparent 70%);
       pointer-events: none;
@@ -193,59 +286,87 @@
     .eyebrow {
       display: inline-flex;
       width: fit-content;
-      padding: 8px 14px;
+      padding: 7px 14px;
       border-radius: 999px;
-      background: var(--chip);
-      border: 1px solid var(--panel-line);
-      color: rgba(255, 235, 221, 0.86);
-      letter-spacing: 0.12em;
+      background: rgba(232, 160, 32, 0.08);
+      border: 1px solid rgba(232, 160, 32, 0.18);
+      color: var(--gold-light);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      font-size: 0.76rem;
+      font-size: 0.7rem;
     }
 
-    h1 {
-      margin-top: 18px;
-      font-size: clamp(3rem, 6vw, 5.4rem);
+    /* ─── Typewriter h1 ─── */
+    h1.typewriter-target {
+      margin-top: 16px;
+      font-size: clamp(2.8rem, 6vw, 5rem);
       line-height: 0.95;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #fff6ef 0%, var(--gold-light) 45%, var(--neon) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradient-shift 6s ease infinite;
+      min-height: 1em; /* reserve space while typing */
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 4px;
+      height: 0.8em;
+      vertical-align: middle;
+      background: var(--gold);
+      margin-left: 6px;
+      border-radius: 2px;
+      animation: blink 0.75s step-end infinite;
     }
 
     .subtitle {
-      margin-top: 16px;
-      max-width: 28rem;
-      font-size: 1.08rem;
-      line-height: 1.8;
       color: var(--text-dim);
+      font-size: 1.06rem;
+      line-height: 1.82;
+      max-width: 28rem;
     }
 
+    /* ─── Metric boxes ─── */
     .metrics {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
 
     .metric {
-      padding: 18px;
-      border-radius: 22px;
+      padding: 18px 16px;
+      border-radius: 20px;
       background: var(--panel);
       border: 1px solid var(--panel-line);
       backdrop-filter: blur(14px);
+      transition: border-color 0.25s, background 0.25s;
+    }
+
+    .metric:hover {
+      background: rgba(232, 160, 32, 0.06);
+      border-color: rgba(232, 160, 32, 0.2);
     }
 
     .metric strong {
       display: block;
-      font-size: 1.55rem;
+      font-family: "Orbitron", sans-serif;
+      font-size: 1.4rem;
       font-weight: 700;
+      color: var(--gold-light);
     }
 
     .metric span {
       display: block;
-      margin-top: 8px;
+      margin-top: 9px;
       color: var(--text-dim);
-      font-size: 0.92rem;
-      line-height: 1.5;
+      font-size: 0.9rem;
+      line-height: 1.55;
     }
 
+    /* ─── Chips ─── */
     .chips {
       display: flex;
       flex-wrap: wrap;
@@ -253,59 +374,466 @@
     }
 
     .chips span {
-      padding: 10px 14px;
+      padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #ffe8dc;
-      font-size: 0.92rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      color: rgba(255, 248, 241, 0.82);
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      transition: all 0.22s;
+      cursor: default;
     }
 
-    .footer {
+    .chips span:hover {
+      background: rgba(232, 160, 32, 0.1);
+      border-color: rgba(232, 160, 32, 0.28);
+      color: var(--gold-light);
+    }
+
+    /* ─── Footer ─── */
+    .hero-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      padding-top: 10px;
+      padding-top: 6px;
     }
 
-    .footer p {
+    .hero-footer p {
       color: var(--text-dim);
-      line-height: 1.7;
-      max-width: 28rem;
+      line-height: 1.72;
+      max-width: 26rem;
+      font-size: 0.95rem;
     }
 
-    .contact {
+    .contact-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 168px;
-      padding: 15px 22px;
+      min-width: 160px;
+      padding: 14px 26px;
       border-radius: 999px;
       text-decoration: none;
-      color: #1f1008;
+      color: #1a0a02;
       font-weight: 700;
-      background: linear-gradient(135deg, #ffb788, #ff7a2f);
-      box-shadow: 0 16px 30px rgba(255, 122, 47, 0.28);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-family: "Rajdhani", sans-serif;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--gold-light), var(--neon));
+      box-shadow: 0 0 28px rgba(232, 160, 32, 0.28), 0 16px 36px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.22s, box-shadow 0.22s;
     }
 
-    .contact:hover {
+    .contact-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+      transform: translateX(-100%);
+      transition: transform 0s; /* controlled by hover */
+    }
+
+    .contact-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 20px 36px rgba(255, 122, 47, 0.34);
+      box-shadow: 0 0 44px rgba(232, 160, 32, 0.46), 0 20px 44px rgba(0, 0, 0, 0.45);
     }
 
+    .contact-btn:hover::after {
+      transform: translateX(200%);
+      transition: transform 0.55s ease;
+    }
+
+    /* ═══════════════════════════════════════════
+       PLAYER CARD SECTION
+    ═══════════════════════════════════════════ */
+    .player-section {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 100px;
+      gap: 64px;
+    }
+
+    /* Section divider line */
+    .player-section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: min(600px, 80%);
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent, rgba(232, 160, 32, 0.22) 30%, rgba(232, 160, 32, 0.22) 70%, transparent);
+    }
+
+    .section-title {
+      text-align: center;
+    }
+
+    .section-title h2 {
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      background: linear-gradient(90deg,
+        var(--gold-dark), var(--gold-light), var(--neon), var(--gold-light), var(--gold-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 250% 100%;
+      animation: shimmer-text 3.5s linear infinite;
+    }
+
+    .section-title p {
+      margin-top: 12px;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════════════════════
+       EA FC PLAYER CARD
+    ═══════════════════════════════════════════ */
+
+    /* Perspective wrapper — mouse parallax applied here */
+    .fc-card-wrapper {
+      perspective: 1100px;
+      width: 300px;
+      height: 450px;
+      cursor: pointer;
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,0.7)) drop-shadow(0 0 24px rgba(232,160,32,0.3));
+      transition: filter 0.3s;
+    }
+
+    .fc-card-wrapper:hover {
+      filter: drop-shadow(0 40px 80px rgba(0,0,0,0.8)) drop-shadow(0 0 40px rgba(232,160,32,0.5));
+    }
+
+    /* Inner — receives JS transform */
+    .fc-card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* The card face */
+    .fc-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      /* EA FC gold card gradient */
+      background:
+        radial-gradient(ellipse at 30% 15%, rgba(255, 245, 170, 0.55) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 80%, rgba(160, 90, 0, 0.35) 0%, transparent 50%),
+        linear-gradient(160deg,
+          #fff5b0 0%,
+          #f0c035 12%,
+          #cc8808 28%,
+          #e8b02a 42%,
+          #b47010 56%,
+          #d8a020 70%,
+          #f5cc50 84%,
+          #c08015 100%);
+      border: 1px solid rgba(255, 230, 120, 0.5);
+    }
+
+    /* Moving shine sweep */
+    .fc-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        115deg,
+        transparent 15%,
+        rgba(255, 255, 255, 0.08) 35%,
+        rgba(255, 255, 255, 0.32) 50%,
+        rgba(255, 255, 255, 0.08) 65%,
+        transparent 85%
+      );
+      animation: card-shine 2.8s ease-in-out infinite;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    /* Metallic fine-line texture */
+    .fc-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          92deg,
+          transparent,
+          transparent 3px,
+          rgba(0, 0, 0, 0.025) 3px,
+          rgba(0, 0, 0, 0.025) 6px
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ─── Card: Top row (rating + meta) ─── */
+    .fc-top {
+      position: relative;
+      z-index: 5;
+      padding: 14px 16px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .fc-rating-block {
+      text-align: left;
+    }
+
+    .fc-overall {
+      font-family: "Orbitron", sans-serif;
+      font-size: 3.8rem;
+      font-weight: 900;
+      line-height: 1;
+      color: #1a0800;
+      /* subtle emboss */
+      text-shadow: 0 1px 0 rgba(255, 220, 100, 0.6), 0 -1px 0 rgba(80, 30, 0, 0.3);
+    }
+
+    .fc-position {
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #2a1200;
+      letter-spacing: 0.14em;
+      margin-top: 2px;
+    }
+
+    .fc-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Card type label */
+    .fc-card-type {
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.48rem;
+      font-weight: 700;
+      color: #2a1200;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.75;
+    }
+
+    /* Simple CSS-drawn flag (China) */
+    .fc-flag {
+      width: 28px;
+      height: 19px;
+      background: #de2910;
+      border-radius: 2px;
+      border: 1px solid rgba(0, 0, 0, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 3px;
+      gap: 1px;
+      overflow: hidden;
+    }
+
+    .fc-flag span {
+      color: #ffde00;
+      font-size: 7px;
+      line-height: 1;
+    }
+
+    /* Club badge circle */
+    .fc-club-badge {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #1a0800, #3a1600);
+      border-radius: 50%;
+      border: 2px solid rgba(255, 210, 80, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    /* ─── Card: Player photo ─── */
+    .fc-photo {
+      position: relative;
+      z-index: 5;
+      height: 194px;
+      margin: 6px 10px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow:
+        inset 0 6px 14px rgba(200, 130, 0, 0.5),
+        inset 0 -6px 14px rgba(160, 90, 0, 0.45),
+        0 4px 14px rgba(0,0,0,0.5);
+    }
+
+    .fc-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: saturate(1.08) contrast(1.05);
+    }
+
+    /* ─── Card: Name ─── */
+    .fc-name {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      padding: 8px 12px 0;
+      font-family: "Orbitron", sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1a0800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 0 rgba(255, 220, 100, 0.5);
+    }
+
+    /* ─── Card: Divider ─── */
+    .fc-divider {
+      position: relative;
+      z-index: 5;
+      margin: 7px 16px;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent, rgba(100, 55, 0, 0.45) 20%, rgba(100, 55, 0, 0.45) 80%, transparent);
+    }
+
+    /* ─── Card: Stats grid ─── */
+    .fc-stats {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 2px 10px 14px;
+    }
+
+    .fc-stat {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+    }
+
+    /* Left column gets a right border */
+    .fc-stat:nth-child(odd) {
+      border-right: 1px solid rgba(110, 60, 0, 0.28);
+      justify-content: flex-end;
+    }
+
+    .fc-stat:nth-child(even) {
+      justify-content: flex-start;
+    }
+
+    .fc-stat-val {
+      font-family: "Orbitron", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1a0600;
+      min-width: 26px;
+      text-align: right;
+    }
+
+    .fc-stat-label {
+      font-family: "Rajdhani", sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #3a1800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      min-width: 28px;
+    }
+
+    /* ─── Card: bottom decorative strip ─── */
+    .fc-bottom-strip {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg,
+        var(--gold-dark), var(--gold-light) 50%, var(--gold-dark));
+      z-index: 5;
+      border-radius: 0 0 20px 20px;
+    }
+
+    /* ═══════════════════════════════════════════
+       SCROLL REVEAL
+    ═══════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(44px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════════════════
+       KEYFRAME ANIMATIONS
+    ═══════════════════════════════════════════ */
+
+    /* Ambient orb float */
     @keyframes drift {
-      0%, 100% {
-        transform: translate3d(0, 0, 0);
-      }
-      50% {
-        transform: translate3d(0, -14px, 0);
-      }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50%       { transform: translate3d(0, -22px, 0); }
     }
 
-    @media (max-width: 920px) {
-      .card {
+    /* Cursor blink */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* Gradient shift on h1 */
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50%       { background-position: 100% 50%; }
+    }
+
+    /* Top-edge shimmer on main card */
+    @keyframes shimmer-line {
+      0%, 100% { opacity: 0.55; }
+      50%       { opacity: 1; }
+    }
+
+    /* Section title text shimmer */
+    @keyframes shimmer-text {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    /* Card shine sweep */
+    @keyframes card-shine {
+      0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+      25%  { opacity: 1; }
+      75%  { opacity: 1; }
+      100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .main-card {
         grid-template-columns: 1fr;
       }
 
@@ -315,23 +843,21 @@
 
       .photo-panel::after {
         background:
-          linear-gradient(180deg, rgba(16, 8, 5, 0.08), rgba(16, 8, 5, 0.2) 40%, rgba(16, 8, 5, 0.68) 100%);
+          linear-gradient(180deg, rgba(8,5,8,0.06), rgba(8,5,8,0.22) 40%, rgba(8,5,8,0.78) 100%);
+      }
+
+      .navbar-links {
+        display: none;
       }
     }
 
     @media (max-width: 640px) {
-      body {
-        padding: 14px;
+      .hero {
+        padding: 80px 14px 30px;
       }
 
-      .card {
-        min-height: auto;
-        border-radius: 24px;
-      }
-
-      .content,
-      .photo-caption {
-        padding: 0;
+      .content {
+        padding: 28px 20px 24px;
       }
 
       .photo-panel {
@@ -339,89 +865,349 @@
       }
 
       .stamp {
-        top: 18px;
-        left: 18px;
+        top: 18px; left: 18px;
       }
 
       .photo-caption {
-        left: 18px;
-        right: 18px;
-        bottom: 18px;
+        left: 18px; right: 18px; bottom: 18px;
         flex-direction: column;
         align-items: flex-start;
-      }
-
-      .content {
-        padding: 24px 18px 22px;
+        gap: 10px;
       }
 
       .metrics {
         grid-template-columns: 1fr;
       }
 
-      .footer {
+      .hero-footer {
         flex-direction: column;
         align-items: stretch;
       }
 
-      .contact {
+      .contact-btn {
         width: 100%;
+        text-align: center;
       }
+
+      .fc-card-wrapper {
+        width: 264px;
+        height: 396px;
+      }
+
+      .fc-overall { font-size: 3.2rem; }
+      .fc-photo   { height: 168px; }
+      .fc-name    { font-size: 1.1rem; }
     }
   </style>
 </head>
 <body>
-  <main class="card">
-    <section class="photo-panel">
-      <div class="stamp">Live Card</div>
-      <img src="./chc.jpeg" alt="唱歌的照片">
-      <div class="photo-caption">
-        <div>
-          <strong>CHC</strong>
-          <span>Neon gym frame / portrait capture</span>
+
+  <!-- Fixed particle canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="navbar">
+    <div class="navbar-logo">CHC</div>
+    <ul class="navbar-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#player-card">Player Card</a></li>
+      <li><a href="mailto:your-email@example.com">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ HERO SECTION ══ -->
+  <section class="hero" id="hero">
+    <main class="main-card">
+
+      <!-- Left: Photo Panel -->
+      <section class="photo-panel">
+        <div class="stamp">Live Card</div>
+        <img src="./chc.jpeg" alt="唱歌的照片">
+        <div class="photo-caption">
+          <div>
+            <strong>CHC</strong>
+            <span>Neon gym frame / portrait capture</span>
+          </div>
+          <div class="signal">IRL Mode On</div>
         </div>
-        <div class="signal">IRL Mode On</div>
-      </div>
-    </section>
+      </section>
 
-    <section class="content">
-      <div>
-        <span class="eyebrow">Personal Identity</span>
-        <h1>唱歌</h1>
-        <p class="subtitle">
-          你唱歌的个人封面。
-        </p>
-      </div>
+      <!-- Right: Content Panel -->
+      <section class="content">
+        <div>
+          <span class="eyebrow">Personal Identity</span>
+          <!-- Typewriter fills this in via JS -->
+          <h1 class="typewriter-target" aria-label="唱歌"></h1>
+          <p class="subtitle">你唱歌的个人封面。</p>
+        </div>
 
-      <div class="metrics">
-        <article class="metric">
-          <strong>01</strong>
-          <span>主视觉直接使用你唱歌的照片。</span>
-        </article>
-        <article class="metric">
-          <strong>02</strong>
-          <span>整体配色取自现场暖橙灯光。</span>
-        </article>
-        <article class="metric">
-          <strong>03</strong>
-          <span>桌面端是海报卡片，手机端自动转成竖向展示。</span>
-        </article>
-      </div>
+        <div class="metrics">
+          <article class="metric">
+            <strong>01</strong>
+            <span>主视觉直接使用你唱歌的照片。</span>
+          </article>
+          <article class="metric">
+            <strong>02</strong>
+            <span>整体配色取自现场暖橙灯光。</span>
+          </article>
+          <article class="metric">
+            <strong>03</strong>
+            <span>桌面端是海报卡片，手机端自动转成竖向展示。</span>
+          </article>
+        </div>
 
-      <div class="chips">
-        <span>Portrait</span>
-        <span>Fitness</span>
-        <span>Night Glow</span>
-        <span>Minimal Bio</span>
-      </div>
+        <div class="chips">
+          <span>Portrait</span>
+          <span>Fitness</span>
+          <span>Night Glow</span>
+          <span>Minimal Bio</span>
+        </div>
 
-      <div class="footer">
-        <p>
-          可以把这里再接成社交链接或者一整页更完整的个人站。
-        </p>
-        <a class="contact" href="mailto:your-email@example.com">Contact</a>
-      </div>
-    </section>
-  </main>
+        <div class="hero-footer">
+          <p>可以把这里再接成社交链接或者一整页更完整的个人站。</p>
+          <a class="contact-btn" href="mailto:your-email@example.com">Contact</a>
+        </div>
+      </section>
+
+    </main>
+  </section>
+
+  <!-- ══ PLAYER CARD SECTION ══ -->
+  <section class="player-section" id="player-card">
+
+    <div class="section-title reveal">
+      <h2>Player Card</h2>
+      <p>EA FC · Ultimate Edition</p>
+    </div>
+
+    <!-- 3D parallax wrapper -->
+    <div class="fc-card-wrapper reveal">
+      <div class="fc-card-inner">
+        <div class="fc-card">
+
+          <!-- Top row: Overall rating (left) + meta info (right) -->
+          <div class="fc-top">
+            <div class="fc-rating-block">
+              <div class="fc-overall">98</div>
+              <div class="fc-position">FW</div>
+            </div>
+            <div class="fc-meta">
+              <div class="fc-card-type">Gold Rare</div>
+              <!-- China flag (CSS) -->
+              <div class="fc-flag" title="China">
+                <span>★</span><span style="font-size:5px">★★★★</span>
+              </div>
+              <!-- Club badge -->
+              <div class="fc-club-badge">♦</div>
+            </div>
+          </div>
+
+          <!-- Player photo -->
+          <div class="fc-photo">
+            <img src="./chc.jpeg" alt="唱歌">
+          </div>
+
+          <!-- Player name -->
+          <div class="fc-name">唱歌</div>
+
+          <!-- Separator -->
+          <div class="fc-divider"></div>
+
+          <!--
+            Stats grid — 2 columns:
+            Left : FOT 98 | DIC 91 | FLY 78
+            Right: SPD 95 | DOI 69 | PHY 13
+            Grid fills left→right, top→bottom, so order: FOT, SPD, DIC, DOI, FLY, PHY
+          -->
+          <div class="fc-stats">
+            <div class="fc-stat">
+              <span class="fc-stat-val">98</span>
+              <span class="fc-stat-label">FOT</span>
+            </div>
+            <div class="fc-stat">
+              <span class="fc-stat-val">95</span>
+              <span class="fc-stat-label">SPD</span>
+            </div>
+            <div class="fc-stat">
+              <span class="fc-stat-val">91</span>
+              <span class="fc-stat-label">DIC</span>
+            </div>
+            <div class="fc-stat">
+              <span class="fc-stat-val">69</span>
+              <span class="fc-stat-label">DOI</span>
+            </div>
+            <div class="fc-stat">
+              <span class="fc-stat-val">78</span>
+              <span class="fc-stat-label">FLY</span>
+            </div>
+            <div class="fc-stat">
+              <span class="fc-stat-val">13</span>
+              <span class="fc-stat-label">PHY</span>
+            </div>
+          </div>
+
+          <!-- Decorative bottom strip -->
+          <div class="fc-bottom-strip"></div>
+        </div><!-- /.fc-card -->
+      </div><!-- /.fc-card-inner -->
+    </div><!-- /.fc-card-wrapper -->
+
+  </section><!-- /.player-section -->
+
+  <!-- ══ SCRIPTS ══ -->
+  <script>
+    /* ─────────────────────────────────────────
+       1. PARTICLE SYSTEM
+       Floating gold/orange dust particles on a
+       fixed canvas behind everything.
+    ───────────────────────────────────────── */
+    (function () {
+      'use strict';
+      const canvas = document.getElementById('particles-canvas');
+      const ctx = canvas.getContext('2d');
+      const PARTICLE_COUNT = 110;
+      let particles = [];
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      class Particle {
+        constructor() { this.spawn(); }
+
+        spawn() {
+          this.x     = Math.random() * canvas.width;
+          this.y     = Math.random() * canvas.height;
+          this.r     = Math.random() * 1.6 + 0.3;
+          this.vx    = (Math.random() - 0.5) * 0.25;
+          this.vy    = -(Math.random() * 0.25 + 0.08);
+          this.alpha = Math.random() * 0.45 + 0.08;
+          this.fade  = Math.random() * 0.0006 + 0.0004;
+          // Gold or orange tint
+          this.color = Math.random() > 0.55 ? '#e8a020' : '#ff7a2f';
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.alpha -= this.fade;
+          if (this.alpha <= 0 || this.y < -8) this.spawn();
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle   = this.color;
+          ctx.globalAlpha = Math.max(0, this.alpha);
+          ctx.fill();
+        }
+      }
+
+      function init() {
+        resize();
+        particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle());
+        // Spread initial positions across full viewport height
+        particles.forEach(p => { p.y = Math.random() * canvas.height; });
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(loop);
+      }
+
+      window.addEventListener('resize', () => {
+        resize();
+        particles.forEach(p => p.spawn());
+      });
+
+      init();
+      loop();
+    }());
+
+    /* ─────────────────────────────────────────
+       2. TYPEWRITER EFFECT
+       Types out the h1 text character by
+       character, then removes the cursor.
+    ───────────────────────────────────────── */
+    (function () {
+      'use strict';
+      const el   = document.querySelector('.typewriter-target');
+      if (!el) return;
+      const text = '唱歌';
+      let i = 0;
+
+      // Blinking cursor element
+      const cursor = document.createElement('span');
+      cursor.className     = 'cursor-blink';
+      cursor.setAttribute('aria-hidden', 'true');
+
+      function type() {
+        el.textContent = text.slice(0, ++i);
+        el.appendChild(cursor);
+        if (i < text.length) {
+          setTimeout(type, 200);
+        } else {
+          // Hide cursor after 2.5 s once typing is done
+          setTimeout(() => { cursor.style.display = 'none'; }, 2500);
+        }
+      }
+
+      setTimeout(type, 700);
+    }());
+
+    /* ─────────────────────────────────────────
+       3. SCROLL REVEAL
+       Elements with class "reveal" fade + slide
+       up when they enter the viewport.
+    ───────────────────────────────────────── */
+    (function () {
+      'use strict';
+      const items = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, idx) => {
+          if (entry.isIntersecting) {
+            // Slight stagger between siblings
+            setTimeout(() => entry.target.classList.add('visible'), idx * 160);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      items.forEach(el => observer.observe(el));
+    }());
+
+    /* ─────────────────────────────────────────
+       4. PLAYER CARD — MOUSE PARALLAX / 3D TILT
+       Smoothly rotates the card to follow the
+       cursor; resets on mouse leave.
+    ───────────────────────────────────────── */
+    (function () {
+      'use strict';
+      const wrapper = document.querySelector('.fc-card-wrapper');
+      const inner   = document.querySelector('.fc-card-inner');
+      if (!wrapper || !inner) return;
+
+      const MAX_ROT_X = 14;  // degrees vertical tilt
+      const MAX_ROT_Y = 20;  // degrees horizontal tilt
+
+      wrapper.addEventListener('mousemove', (e) => {
+        const rect = wrapper.getBoundingClientRect();
+        const nx   = ((e.clientX - rect.left)  / rect.width  - 0.5) * 2; // -1..1
+        const ny   = ((e.clientY - rect.top)   / rect.height - 0.5) * 2; // -1..1
+        inner.style.transition = 'transform 0.08s ease';
+        inner.style.transform  =
+          `rotateY(${nx * MAX_ROT_Y}deg) rotateX(${-ny * MAX_ROT_X}deg) scale(1.04)`;
+      });
+
+      wrapper.addEventListener('mouseleave', () => {
+        inner.style.transition = 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
+        inner.style.transform  = 'rotateY(0deg) rotateX(0deg) scale(1)';
+      });
+    }());
+  </script>
+
 </body>
 </html>
